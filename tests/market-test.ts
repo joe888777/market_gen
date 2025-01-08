@@ -35,9 +35,7 @@ describe("market-test", () => {
   const DEX_PROGRAM_ID = new PublicKey(
     "EoTcMgcDRTJVZDMZWBoU6rhYHZfkNTVEAfz3uUJRcYGj"
   );
-  // const DEX_PROGRAM_ID = new PublicKey(
-  //   "EoTcMgcDRTJVZDMZWBoU6rhYHZfkNTVEAfz3uUJRcYGj"
-  // );
+
   const user = provider.wallet as NodeWallet;
 
   const seed = new anchor.BN(randomBytes(4));
@@ -48,8 +46,8 @@ describe("market-test", () => {
   const REQ_Q_SEED = `req_q_${seed.toNumber()}`;
   const EVENT_Q_SEED = `event_q_${seed.toNumber()}`;
 
-  const COIN_LOT_SIZE = new anchor.BN(10);
-  const PC_LOT_SIZE = new anchor.BN(100_000);
+  const COIN_LOT_SIZE = new anchor.BN(100_000);
+  const PC_LOT_SIZE = new anchor.BN(10);
   const PC_DUST_THRESHOLD = new anchor.BN(10);
 
   // const market = Keypair.generate();
@@ -132,13 +130,14 @@ describe("market-test", () => {
       DEX_PROGRAM_ID
     );
 
-    // important, should 
+    // important, should modify in @solana/web3.js/src/publickey/findeProgramAddressSync
+    //  modify the nonce calculation from 255-- to 0~99
     [signer_vault_account, nonce] = PublicKey.findProgramAddressSync(
       [market.toBuffer()],
       DEX_PROGRAM_ID
     )
 
-    //mint progress
+    //mint token
     let lamports = await getMinimumBalanceForRentExemptMint(connection);
     let tx = new Transaction();
     tx.instructions = [
@@ -186,7 +185,7 @@ describe("market-test", () => {
         ),
       ]),
     ];
-    
+    // create accounts
     await provider
       .sendAndConfirm(tx, [user.payer, coin_mint, pc_mint])
       .then(log);
@@ -219,10 +218,9 @@ describe("market-test", () => {
       authority: user.payer.publicKey,
     };
 
-    //tx2
+    //tx2 to create the accounts: market, bids, asks, req_q, event_q
     const tx2 = new Transaction();
 
-    console.log("txxxxx");
     tx2.add(
       createProgramAccount(
         user.publicKey,
@@ -273,9 +271,7 @@ describe("market-test", () => {
         DEX_PROGRAM_ID
       )
     );
-    console.log("tx222222222");
     await sendAndConfirmTransaction(connection, tx2, [user.payer]);
-    console.log("tx000000000");
   });
 
   it("Is initialized!", async () => {
