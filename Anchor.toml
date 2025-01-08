@@ -4,14 +4,14 @@
 resolution = true
 skip-lint = false
 
-[programs.localnet]
-market_test = "8HePVemepFh6CRn9t1kQRgyWrMjr4rjatQCC2t7N7gEw"
+[programs.devnet]
+market_test = "Az88Wvk5gVMqFc7QQ94NqSa3sVCjnoQhjfNdqiti26fu"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "https://niki-c1qc77-fast-devnet.helius-rpc.com"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
